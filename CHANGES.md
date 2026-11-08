@@ -33,3 +33,6 @@ The editable install uses the `pdm-backend` build backend; PDM itself is not nee
 - `resolve_odds` pairs odds to matches on league, division, year, home and away team and ignores the date. For
   sports where a pair meets more than once a season (NBA, NFL playoffs) it can attach odds to the wrong game. Workaround:
   give the odds source the same `name` as the stats source so `DataLoader` skips it, and align by kickoff.
+- `NBAStats` keeps ESPN's `TBD vs TBD` placeholder games (NBA Cup knockout slots, seen 2026-11-08 for the 2026-27 season,
+  72 rows). They are identical rows, so `check_snapshot_unique` fails and the whole season will not load. Workaround:
+  `sports_engine.sources.nba_stats.NBAStatsMonthly` drops them and counts them.
