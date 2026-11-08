@@ -25,3 +25,11 @@ git rebase upstream/main          # or: git merge upstream/main
 
 The package version comes from git tags (`tool.pdm.version source = "scm"`), so keep upstream tags fetched.
 The editable install uses the `pdm-backend` build backend; PDM itself is not needed to install it with uv.
+
+## Known upstream problems (not patched here; worked around in `sports-engine`)
+
+- `NBAStats` requests ESPN date ranges (`dates=YYYYMMDD-YYYYMMDD`), which ESPN now rejects with HTTP 400 (seen
+  2026-11-07, upstream 0.15.1). Month form `dates=YYYYMM` works. Workaround: `sports_engine.sources.nba_stats`.
+- `resolve_odds` pairs odds to matches on league, division, year, home and away team and ignores the date. For
+  sports where a pair meets more than once a season (NBA, NFL playoffs) it can attach odds to the wrong game. Workaround:
+  give the odds source the same `name` as the stats source so `DataLoader` skips it, and align by kickoff.
